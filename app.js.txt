@@ -1,0 +1,185 @@
+let currentUser = null;
+let activeChatUser = null;
+let chatHistory = {};
+
+const users = [
+  {
+    id: 1,
+    name: "Marie",
+    age: 28,
+    department: "Ouest",
+    diaspora: "Haiti",
+    languages: ["Kreyòl", "French"],
+    lookingFor: "Serious",
+  },
+  {
+    id: 2,
+    name: "Jean",
+    age: 32,
+    department: "Artibonite",
+    diaspora: "USA",
+    languages: ["Kreyòl", "English"],
+    lookingFor: "Marriage",
+  },
+  {
+    id: 3,
+    name: "Sophia",
+    age: 26,
+    department: "Nord",
+    diaspora: "Canada",
+    languages: ["French", "English"],
+    lookingFor: "Serious",
+  }
+];
+
+window.onload = () => {
+  const loginBtn = document.getElementById("loginBtn");
+  const saveProfileBtn = document.getElementById("saveProfileBtn");
+  const sendMsgBtn = document.getElementById("sendMsgBtn");
+
+  loginBtn.addEventListener("click", handleLogin);
+  saveProfileBtn.addEventListener("click", handleSaveProfile);
+  sendMsgBtn.addEventListener("click", handleSendMessage);
+};
+
+function handleLogin() {
+  const email = document.getElementById("emailInput").value;
+  const password = document.getElementById("passwordInput").value;
+
+  if (!email || !password) {
+    alert("Please enter email and password.");
+    return;
+  }
+
+  document.getElementById("auth-section").classList.add("hidden");
+  document.getElementById("profile-section").classList.remove("hidden");
+}
+
+function handleSaveProfile() {
+  const name = document.getElementById("nameInput").value;
+  const age = document.getElementById("ageInput").value;
+  const location = document.getElementById("locationInput").value;
+  const department = document.getElementById("departmentInput").value;
+  const languages = document.getElementById("languagesInput").value.split(",").map(l => l.trim());
+  const bio = document.getElementById("bioInput").value;
+
+  if (!name || !age || !location) {
+    alert("Please fill at least name, age, and location.");
+    return;
+  }
+
+  currentUser = {
+    id: 999,
+    name,
+    age,
+    location,
+    department,
+    diaspora: "Unknown",
+    languages,
+    lookingFor: "Serious",
+    bio,
+  };
+
+  document.getElementById("profile-section").classList.add("hidden");
+  document.getElementById("matches-section").classList.remove("hidden");
+
+  showMatches(currentUser);
+}
+
+function findMatches(currentUser) {
+  return users.filter(user => {
+    if (user.id === currentUser.id) return false;
+
+    const departmentMatch = user.department === currentUser.department;
+    const diasporaMatch = user.diaspora === currentUser.diaspora;
+    const languageMatch = user.languages.some(lang =>
+      currentUser.languages.includes(lang)
+    );
+    const relationshipMatch = user.lookingFor === currentUser.lookingFor;
+
+    return (
+      departmentMatch ||
+      diasporaMatch ||
+      languageMatch ||
+      relationshipMatch
+    );
+  });
+}
+
+function showMatches(currentUser) {
+  const matchesList = document.getElementById("matchesList");
+  const matches = findMatches(currentUser);
+
+  matchesList.innerHTML = "";
+
+  if (matches.length === 0) {
+    matchesList.innerHTML = "<p>No matches found yet.</p>";
+    return;
+  }
+
+  matches.forEach(match => {
+    const card = document.createElement("div");
+    card.className = "match-card";
+    card.innerHTML = `
+      <strong>${match.name}, ${match.age}</strong><br/>
+      Dept: ${match.department}<br/>
+      Diaspora: ${match.diaspora}<br/>
+      Languages: ${match.languages.join(", ")}<br/>
+      Looking for: ${match.lookingFor}<br/>
+      <button class="openChatBtn">Chat with ${match.name}</button>
+    `;
+    matchesList.appendChild(card);
+
+    const btn = card.querySelector(".openChatBtn");
+    btn.addEventListener("click", () => openChat(match));
+  });
+}
+
+function openChat(matchUser) {
+  activeChatUser = matchUser;
+
+  document.getElementById("matches-section").classList.add("hidden");
+  document.getElementById("chat-section").classList.remove("hidden");
+
+  document.getElementById("chatHeader").innerText =
+    `Chat with ${matchUser.name} (${matchUser.department}, ${matchUser.diaspora})`;
+
+  if (!chatHistory[matchUser.id]) {
+    chatHistory[matchUser.id] = [];
+  }
+
+  renderChatMessages();
+}
+
+function renderChatMessages() {
+  const chatMessagesDiv = document.getElementById("chatMessages");
+  chatMessagesDiv.innerHTML = "";
+
+  const messages = chatHistory[activeChatUser.id] || [];
+
+  messages.forEach(msg => {
+    const div = document.createElement("div");
+    div.className = `chat-message ${msg.sender}`;
+    div.innerText = msg.text;
+    chatMessagesDiv.appendChild(div);
+  });
+}
+
+function handleSendMessage() {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text || !activeChatUser) return;
+
+  chatHistory[activeChatUser.id].push({
+    sender: "me",
+    text,
+  });
+
+  chatHistory[activeChatUser.id].push({
+    sender: "them",
+    text: "Mèsi pou mesaj ou. Ann pale plis.",
+  });
+
+  input.value = "";
+  renderChatMessages();
+}

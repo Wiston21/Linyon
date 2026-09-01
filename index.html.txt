@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linyon – Haitian Dating App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>LINYON</h1>
+    <p>Where Haitian hearts connect.</p>
+  </header>
+
+  <main>
+    <!-- Auth Section -->
+    <section id="auth-section">
+      <h2>Sign In / Sign Up</h2>
+      <input id="emailInput" type="email" placeholder="Email" />
+      <input id="passwordInput" type="password" placeholder="Password" />
+      <button id="loginBtn">Continue</button>
+    </section>
+
+    <!-- Profile Setup -->
+    <section id="profile-section" class="hidden">
+      <h2>Create Your Profile</h2>
+      <input id="nameInput" type="text" placeholder="Full Name" />
+      <input id="ageInput" type="number" placeholder="Age" />
+      <input id="locationInput" type="text" placeholder="Location (e.g. Miami, FL)" />
+      <input id="departmentInput" type="text" placeholder="Department of origin (e.g. Nord)" />
+      <input id="languagesInput" type="text" placeholder="Languages (Kreyòl, French, English)" />
+      <textarea id="bioInput" placeholder="Short bio"></textarea>
+      <button id="saveProfileBtn">Save Profile</button>
+    </section>
+
+    <!-- Matches -->
+    <section id="matches-section" class="hidden">
+      <h2>Your Matches</h2>
+      <div id="matchesList"></div>
+    </section>
+
+    <!-- Chat -->
+    <section id="chat-section" class="hidden">
+      <h2>Chat</h2>
+      <div id="chatHeader"></div>
+      <div id="chatMessages"></div>
+      <input id="chatInput" type="text" placeholder="Type a message..." />
+      <button id="sendMsgBtn">Send</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
