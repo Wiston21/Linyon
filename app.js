@@ -9,7 +9,7 @@ const users = [
     age: 28,
     department: "Ouest",
     diaspora: "Haiti",
-    languages: ["Kreyòl", "French"],
+    languages: ["KreyÃ²l", "French"],
     lookingFor: "Serious",
   },
   {
@@ -18,7 +18,7 @@ const users = [
     age: 32,
     department: "Artibonite",
     diaspora: "USA",
-    languages: ["Kreyòl", "English"],
+    languages: ["KreyÃ²l", "English"],
     lookingFor: "Marriage",
   },
   {
@@ -177,7 +177,7 @@ function handleSendMessage() {
 
   chatHistory[activeChatUser.id].push({
     sender: "them",
-    text: "Mèsi pou mesaj ou. Ann pale plis.",
+    text: "MÃ¨si pou mesaj ou. Ann pale plis.",
   });
 
   input.value = "";
