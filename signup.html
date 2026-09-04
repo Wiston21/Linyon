@@ -1,21 +1,48 @@
-<script type="module">
-    import { auth } from "./firebase.js";
-    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Linyon – Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    const form = document.querySelector("form");
+<body class="auth-page">
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    <div class="container">
+        <h1 class="title">Create Account</h1>
 
-        const email = form.querySelector("input[type='email']").value;
-        const password = form.querySelector("input[type='password']").value;
+        <form id="signupForm">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit" class="btn primary">Sign Up</button>
+        </form>
 
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert("Account created successfully!");
-            window.location.href = "login.html";
-        } catch (error) {
-            alert(error.message);
-        }
-    });
-</script>
+        <p class="switch-link">
+            Already have an account? <a href="login.html">Sign In</a>
+        </p>
+    </div>
+
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        const form = document.querySelector("form");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = form.querySelector("input[type='email']").value;
+            const password = form.querySelector("input[type='password']").value;
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("Account created successfully!");
+                window.location.href = "login.html";
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>
