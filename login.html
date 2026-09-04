@@ -1,22 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Linyon – Login</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Login</h1>
+<script type="module">
+    import { auth } from "./firebase.js";
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <form>
-        <label>Email</label>
-        <input type="email" placeholder="Your email">
+    const form = document.querySelector("form");
 
-        <label>Password</label>
-        <input type="password" placeholder="Your password">
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        <button type="submit">Login</button>
-    </form>
+        const email = form.querySelector("input[type='email']").value;
+        const password = form.querySelector("input[type='password']").value;
 
-    <a href="signup.html">Create an account</a>
-</body>
-</html>
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Login successful!");
+            window.location.href = "chat.html";
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+</script>
