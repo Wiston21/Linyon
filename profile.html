@@ -1,28 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Linyon – Profile</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Your Profile</h1>
+<script type="module">
+    import { auth, db } from "./firebase.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <form>
-        <label>Full Name</label>
-        <input type="text" placeholder="Your name">
+    const form = document.querySelector("form");
 
-        <label>Bio</label>
-        <textarea placeholder="Tell us about yourself"></textarea>
+    let currentUser = null;
 
-        <label>Interests</label>
-        <input type="text" placeholder="Music, Travel, etc">
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            alert("You must be logged in to edit your profile.");
+            window.location.href = "login.html";
+        } else {
+            currentUser = user;
+        }
+    });
 
-        <label>Upload Photo</label>
-        <input type="file">
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        <button type="submit">Save Profile</button>
-    </form>
+        const name = form.querySelector("#name").value;
+        const age = form.querySelector("#age").value;
+        const location = form.querySelector("#location").value;
+        const department = form.querySelector("#department").value;
+        const diaspora = form.querySelector("#diaspora").value;
+        const languages = form.querySelector("#languages").value;
+        const bio = form.querySelector("#bio").value;
 
-    <a href="match.html">Find Matches</a>
-</body>
-</html>
+        try {
+            await setDoc(doc(db, "users", currentUser.uid), {
+                name,
+                age,
+                location,
+                department,
+                diaspora,
+                languages,
+                bio,
+                userId: currentUser.uid
+            });
+
+            alert("Profile saved!");
+            window.location.href = "chat.html";
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+</script>
