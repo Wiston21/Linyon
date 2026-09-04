@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Linyon – Signup</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Create Your Account</h1>
+<script type="module">
+    import { auth } from "./firebase.js";
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <form>
-        <label>Name</label>
-        <input type="text" placeholder="Your name">
+    const form = document.querySelector("form");
 
-        <label>Email</label>
-        <input type="email" placeholder="Your email">
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        <label>Password</label>
-        <input type="password" placeholder="Create a password">
+        const email = form.querySelector("input[type='email']").value;
+        const password = form.querySelector("input[type='password']").value;
 
-        <button type="submit">Sign Up</button>
-    </form>
-
-    <a href="login.html">Already have an account? Login</a>
-</body>
-</html>
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("Account created successfully!");
+            window.location.href = "login.html";
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+</script>
