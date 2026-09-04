@@ -1,0 +1,53 @@
+<script type="module">
+    import { auth, db } from "./firebase.js";
+    import { collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const messageForm = document.querySelector("#messageForm");
+    const messageInput = document.querySelector("#messageInput");
+    const messageList = document.querySelector("#messageList");
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            alert("You must be logged in to chat.");
+            window.location.href = "login.html";
+        } else {
+            currentUser = user;
+            loadMessages();
+        }
+    });
+
+    function loadMessages() {
+        const q = query(
+            collection(db, "messages"),
+            orderBy("timestamp", "asc")
+        );
+
+        onSnapshot(q, (snapshot) => {
+            messageList.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const msg = doc.data();
+                const li = document.createElement("li");
+                li.textContent = `${msg.senderId === currentUser.uid ? "You" : msg.senderId}: ${msg.text}`;
+                messageList.appendChild(li);
+            });
+        });
+    }
+
+    messageForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const text = messageInput.value.trim();
+        if (!text) return;
+
+        await addDoc(collection(db, "messages"), {
+            senderId: currentUser.uid,
+            text,
+            timestamp: Date.now()
+        });
+
+        messageInput.value = "";
+    });
+</script>
